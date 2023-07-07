@@ -43,21 +43,21 @@ def clean_data(df):
     return x_df, y_df
 
 
-def main():
+def main(df):
     # Add arguments to script
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
         "--learning_rate",
         type=float,
-        default=1.0,
+        default=0.1,
         help="Scalar value that regulates the magnitude of parameter updates during training.",
     )
     #[0.01, 0.05, 0.1, 0.2, 0.3]
     parser.add_argument(
         "--max_depth",
         type=int,
-        default=100,
+        default=3,
         help="Specifies the maximum depth allowed for an individual decision tree in the ensemble.",
     )
     #[1, 3, 5, 7, 9]
@@ -68,10 +68,7 @@ def main():
     run.log("Learning Rate:", np.float(args.learning_rate))
     run.log("Max Depth:", np.int(args.max_depth))
 
-    url = "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
-    ds = TabularDatasetFactory.from_delimited_files(url)
-
-    x, y = clean_data(ds)
+    x, y = clean_data(df)
 
     x_train, x_test, y_train, y_test = train_test_split(
         x, y, test_size=0.1, random_state=42
