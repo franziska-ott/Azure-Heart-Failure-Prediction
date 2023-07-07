@@ -1,4 +1,24 @@
+#AutoML Explain ToDo
+automl_config = AutoMLConfig(
+    compute_target=cluster,
+    experiment_timeout_minutes=30,
+    task="classification",
+    primary_metric="accuracy",
+    training_data=dataset,
+    label_column_name="Sleep Disorder",
+    n_cross_validations=5
+)
 
+The following AutoML Config is used to get the best model:
+- compute_target: This parameter specifies the target compute resource where the AutoML experiment will be executed. The cluster already is running is used.
+- experiment_timeout_minutes: This parameter sets the maximum amount of time, in minutes, that the AutoML experiment is allowed to run. The experiment should be completed within 30 minutes.
+- task: A classification task is specified since the model will be trained to predict a categorical variable.
+- primary_metric: This parameter determines the evaluation metric that AutoML will use to optimize and compare the performance of different models. Accuracy is a good fit for a classification task.
+- training_data: The Dataset will all relevant data including the target variable.
+- label_column_name: Column name of the target variable.
+- n_cross_validations: Since cross validations help to assess the model's generalization performance by splitting the training data into multiple subsets for training and validation, 5-fold cross validation is used.
+
+#Hyper
 
 from azureml.core import Workspace, Experiment
 
