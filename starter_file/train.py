@@ -53,14 +53,12 @@ def main(df):
         default=0.1,
         help="Scalar value that regulates the magnitude of parameter updates during training.",
     )
-    #[0.01, 0.05, 0.1, 0.2, 0.3]
     parser.add_argument(
         "--max_depth",
         type=int,
         default=3,
         help="Specifies the maximum depth allowed for an individual decision tree in the ensemble.",
     )
-    #[1, 3, 5, 7, 9]
     args = parser.parse_args()
 
     run = Run.get_context()
