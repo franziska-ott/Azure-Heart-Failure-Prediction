@@ -5,7 +5,7 @@ import joblib
 from sklearn.model_selection import train_test_split
 import pandas as pd
 from azureml.core.run import Run
-from azureml.data.dataset_factory import TabularDatasetFactory
+from azureml.core import Workspace, Dataset
 
 
 def clean_data(df):
@@ -43,7 +43,7 @@ def clean_data(df):
     return x_df, y_df
 
 
-def main(df):
+def main():
     # Add arguments to script
     parser = argparse.ArgumentParser()
 
@@ -59,12 +59,22 @@ def main(df):
         default=3,
         help="Specifies the maximum depth allowed for an individual decision tree in the ensemble.",
     )
+
     args = parser.parse_args()
 
     run = Run.get_context()
 
     run.log("Learning Rate:", np.float(args.learning_rate))
     run.log("Max Depth:", np.int(args.max_depth))
+
+    subscription_id = '48a74bb7-9950-4cc1-9caa-5d50f995cc55'
+    resource_group = 'aml-quickstarts-238345'
+    workspace_name = 'quick-starts-ws-238345'
+
+    ws = Workspace(subscription_id, resource_group, workspace_name)
+
+    dataset = Dataset.get_by_name(workspace, name='Sleep-Health-Dataset')
+    df = dataset.to_pandas_dataframe()
 
     x, y = clean_data(df)
 
