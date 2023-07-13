@@ -49,36 +49,37 @@ def init():
 @output_schema(NumpyParameterType(output_sample))
 def run(data):
     try:
-		# Rename columns
-		data = data.rename(columns=lambda x: x.lower().replace(' ', '_'))
+        # Rename columns
+        data = data.rename(columns=lambda x: x.lower().replace(' ', '_'))
 
-		bmi = {
-			"Normal": 0,
-			"Overweight": 1,
-			"Normal Weight": 2,
-			"Obese": 3
-		}
+        bmi = {
+            "Normal": 0,
+            "Overweight": 1,
+            "Normal Weight": 2,
+            "Obese": 3
+        }
 
-		sleep_disorder = {
-			0: "None",
-			1: "Sleep Apnea",
-			2: "Insomnia"
-		}
+        sleep_disorder = {
+            0: "None",
+            1: "Sleep Apnea",
+            2: "Insomnia"
+        }
 
-		# Clean and one hot encode data
-		data.drop("person_id", inplace=True, axis=1)
-		data["gender"] = data.gender.apply(lambda s: 1 if s == "Male" else 0)
-		occupation = pd.get_dummies(data.occupation, prefix="occupation")
-		data.drop("occupation", inplace=True, axis=1)
-		data = data.join(occupation)
-		data["bmi_category"] = data.bmi_category.map(bmi)
-		blood_pressure = pd.get_dummies(data.blood_pressure, prefix="blood_pressure")
-		data.drop("blood_pressure", inplace=True, axis=1)
-		data = data.join(blood_pressure)
+        # Clean and one hot encode data
+        data.drop("person_id", inplace=True, axis=1)
+        data["gender"] = data.gender.apply(lambda s: 1 if s == "Male" else 0)
+        occupation = pd.get_dummies(data.occupation, prefix="occupation")
+        data.drop("occupation", inplace=True, axis=1)
+        data = data.join(occupation)
+        data["bmi_category"] = data.bmi_category.map(bmi)
+        blood_pressure = pd.get_dummies(data.blood_pressure, prefix="blood_pressure")
+        data.drop("blood_pressure", inplace=True, axis=1)
+        data = data.join(blood_pressure)
 
-        result = model.predict(clean_data(data))
-		result.map(sleep_disorder)
-        return json.dumps({"result": result.tolist()})
+        result = model.predict(data)
+        result.map(sleep_disorder)
+        return json.dumps({"result": result})
+
     except Exception as e:
         result = str(e)
         return json.dumps({"error": result})
