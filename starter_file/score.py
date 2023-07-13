@@ -18,7 +18,7 @@ from inference_schema.parameter_types.numpy_parameter_type import NumpyParameter
 from inference_schema.parameter_types.pandas_parameter_type import PandasParameterType
 
 
-input_sample = pd.DataFrame({"age": pd.Series([0.0], dtype="float64"), "anaemia": pd.Series([0], dtype="int64"), "creatinine_phosphokinase": pd.Series([0], dtype="int64"), "diabetes": pd.Series([0], dtype="int64"), "ejection_fraction": pd.Series([0], dtype="int64"), "high_blood_pressure": pd.Series([0], dtype="int64"), "platelets": pd.Series([0.0], dtype="float64"), "serum_creatinine": pd.Series([0.0], dtype="float64"), "serum_sodium": pd.Series([0], dtype="int64"), "sex": pd.Series([0], dtype="int64"), "smoking": pd.Series([0], dtype="int64"), "time": pd.Series([0], dtype="int64")})
+input_sample = pd.DataFrame({"Person ID": pd.Series([1], dtype="int64"), "Gender": pd.Series(["Female"], dtype="object"), "Age": pd.Series([20], dtype="int64"), "Occupation": pd.Series(["Doctor"], dtype="object"), "Sleep Duration": pd.Series([6.2], dtype="float64"), "Quality of Sleep": pd.Series([4], dtype="int64"), "Physical Activity Level": pd.Series([30], dtype="int64"), "Stress Level": pd.Series([6], dtype="int64"), "BMI Category": pd.Series(["Normal"], dtype="object"), "Blood Pressure": pd.Series(["126/83"], dtype="object"), "Heart Rate": pd.Series([77], dtype="int64"), "Daily Steps": pd.Series([8000], dtype="int64")})
 output_sample = np.array([0])
 try:
     log_server.enable_telemetry(INSTRUMENTATION_KEY)
