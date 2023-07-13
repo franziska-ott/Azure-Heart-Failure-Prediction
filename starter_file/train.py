@@ -1,6 +1,6 @@
 import argparse
 import numpy as np
-import sklearn.ensemble as GradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 import joblib
 from sklearn.model_selection import train_test_split
 import pandas as pd
@@ -27,7 +27,7 @@ def clean_data(df):
     }
 
     # Clean and one hot encode data
-    x_df = df.to_pandas_dataframe().dropna()
+    x_df = df.dropna()
     x_df.drop("person_id", inplace=True, axis=1)
     x_df["gender"] = x_df.gender.apply(lambda s: 1 if s == "Male" else 0)
     occupation = pd.get_dummies(x_df.occupation, prefix="occupation")
@@ -54,10 +54,10 @@ def main():
         help="Scalar value that regulates the magnitude of parameter updates during training.",
     )
     parser.add_argument(
-        "--max_depth",
+        "--n_estimators",
         type=int,
         default=3,
-        help="Specifies the maximum depth allowed for an individual decision tree in the ensemble.",
+        help="Specifies the number of boosting stages to perform.",
     )
 
     args = parser.parse_args()
@@ -65,15 +65,13 @@ def main():
     run = Run.get_context()
 
     run.log("Learning Rate:", np.float(args.learning_rate))
-    run.log("Max Depth:", np.int(args.max_depth))
+    run.log("Number Estimators:", np.int(args.n_estimators))
 
-    subscription_id = '48a74bb7-9950-4cc1-9caa-5d50f995cc55'
-    resource_group = 'aml-quickstarts-238345'
-    workspace_name = 'quick-starts-ws-238345'
-
-    ws = Workspace(subscription_id, resource_group, workspace_name)
-
-    dataset = Dataset.get_by_name(workspace, name='Sleep-Health-Dataset')
+    ws = run.experiment.workspace
+    
+    key = "Sleep-Health-Dataset"
+    dataset = ws.datasets[key]
+    
     df = dataset.to_pandas_dataframe()
 
     x, y = clean_data(df)
@@ -82,12 +80,12 @@ def main():
         x, y, test_size=0.1, random_state=42
     )
 
-    model = GradientBoostingClassifier(learning_rate=args.learning_rate, max_depth=args.max_depth).fit(x_train, y_train)
+    model = GradientBoostingClassifier(learning_rate=args.learning_rate, n_estimators=args.n_estimators).fit(x_train, y_train)
 
     accuracy = model.score(x_test, y_test)
     run.log("Accuracy", np.float(accuracy))
 
-    model_filename = f"model_{args.max_depth}_{args.learning_rate}.pkl"
+    model_filename = f"trained_model.pkl"
     joblib.dump(value=model, filename=model_filename)
 
     run.upload_file(model_filename, model_filename)
