@@ -19,7 +19,7 @@ from inference_schema.parameter_types.pandas_parameter_type import PandasParamet
 
 
 input_sample = pd.DataFrame({"Person ID": pd.Series([1], dtype="int64"), "Gender": pd.Series(["Female"], dtype="object"), "Age": pd.Series([20], dtype="int64"), "Occupation": pd.Series(["Doctor"], dtype="object"), "Sleep Duration": pd.Series([6.2], dtype="float64"), "Quality of Sleep": pd.Series([4], dtype="int64"), "Physical Activity Level": pd.Series([30], dtype="int64"), "Stress Level": pd.Series([6], dtype="int64"), "BMI Category": pd.Series(["Normal"], dtype="object"), "Blood Pressure": pd.Series(["126/83"], dtype="object"), "Heart Rate": pd.Series([77], dtype="int64"), "Daily Steps": pd.Series([8000], dtype="int64")})
-output_sample = np.array([0])
+output_sample = NumpyParameterType([0])
 try:
     log_server.enable_telemetry(INSTRUMENTATION_KEY)
     log_server.set_verbosity('INFO')
@@ -77,7 +77,7 @@ def run(data):
         data = data.join(blood_pressure)
 
         result = model.predict(data)
-        result.map(sleep_disorder)
+        # result.map(sleep_disorder)
         return json.dumps({"result": result})
 
     except Exception as e:
