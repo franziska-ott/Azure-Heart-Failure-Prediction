@@ -8,41 +8,6 @@ from azureml.core.run import Run
 from azureml.core import Workspace, Dataset
 
 
-def clean_data(df):
-    # Dict for cleaning data
-    # Rename columns
-    df = df.rename(columns=lambda x: x.lower().replace(' ', '_'))
-
-    bmi = {
-        "Normal": 0,
-        "Overweight": 1,
-        "Normal Weight": 2,
-        "Obese": 3
-    }
-
-    sleep_disorder = {
-        "None": 0,
-        "Sleep Apnea": 1,
-        "Insomnia": 2
-    }
-
-    # Clean and one hot encode data
-    x_df = df.dropna()
-    x_df.drop("person_id", inplace=True, axis=1)
-    x_df["gender"] = x_df.gender.apply(lambda s: 1 if s == "Male" else 0)
-    occupation = pd.get_dummies(x_df.occupation, prefix="occupation")
-    x_df.drop("occupation", inplace=True, axis=1)
-    x_df = x_df.join(occupation)
-    x_df["bmi_category"] = x_df.bmi_category.map(bmi)
-    blood_pressure = pd.get_dummies(x_df.blood_pressure, prefix="blood_pressure")
-    x_df.drop("blood_pressure", inplace=True, axis=1)
-    x_df = x_df.join(blood_pressure)
-
-    y_df = x_df.pop("sleep_disorder").map(sleep_disorder)
-    
-    return x_df, y_df
-
-
 def main():
     # Add arguments to script
     parser = argparse.ArgumentParser()
@@ -69,13 +34,14 @@ def main():
 
     ws = run.experiment.workspace
     
-    key = "Sleep-Health-Dataset"
+    key = "Heart-Failure-Dataset"
     dataset = ws.datasets[key]
     
     df = dataset.to_pandas_dataframe()
 
-    x, y = clean_data(df)
-
+    y = df["DEATH_EVENT"]
+    x = df.drop(columns=["DEATH_EVENT"])
+    
     x_train, x_test, y_train, y_test = train_test_split(
         x, y, test_size=0.1, random_state=42
     )
