@@ -2,7 +2,7 @@
 # Prediction of Heart Failure with Azure
 
 In this final project of the Azure Machine Learning Nanodegree we predict heart failures with use of the Azure Machine Learning Studio.
-Thereby, we compare an AutoML model with a logistic regression (whose hyperparamters will additionally be tuned).
+Thereby, we compare an AutoML model with a gradient boosting classifier (whose hyperparamters will additionally be tuned).
 
 
 ## Dataset
@@ -24,7 +24,7 @@ The dataset can be found in the [project's root](https://github.com/franziska-ot
 we upload the dataset to a datastore and subseqently register it as a dataset in the Machine Learning Studio.
 
 ## Automated ML
-The first modeling approach we conducted was the AutoML. Thereby we set the timeout to 20 min. This is used as an exit criteria and defines how long (in minutes) your experiment should continue to run. The maximum of concurrent iterations is 5 because we only have a 4 nodes cluster of STANDARD_D2_V2 to run the experiment.
+The first modeling approach we conducted was the AutoML. Thereby we set the timeout to 20 min. This is used as an exit criteria and defines how long (in minutes) your experiment should continue to run. The maximum of concurrent iterations is 3 because we only have a 4 nodes cluster of STANDARD_D2_V2 to run the experiment.
 In addition we set accuracy as the primary metric to select the best resulting model since this is the main metric to evaluate classification models.
 
 *Note: The next two screenshots show the training processing in the Notebook widget.*
@@ -35,7 +35,7 @@ In addition we set accuracy as the primary metric to select the best resulting m
 
 ### Results
 
-The best resulting run was a VotingEnsemble, which reached a accuracy of 87.29%. The correpsonding parameters of the model can be found in the [Jupyter Notebook](https://github.com/jopagel/Azure-Heart-Failure-Prediction/blob/main/hyperparameter_tuning.ipynb)
+The best resulting run was a VotingEnsemble, which reached a accuracy of 89.64%. The correpsonding parameters of the model can be found in the [Jupyter Notebook](https://github.com/franziska-ott/Azure-Heart-Failure-Prediction/blob/main/hyperparameter_tuning.ipynb)
 
 ![automl_widget_1](screenshots/auto_registered_and_deployed_model.PNG)
 
@@ -45,8 +45,8 @@ We could improve the modeling process further, if we conduct other preprocessing
 ## Hyperparameter Tuning
 
 Before we train and tune the logistic regression, we split the dataset into 90% for training and 10% for testing.
-We utilize sklearn's LogisticRegression Class to establish and fit the model.
-Thereby, we define a parameter sampler to tune the hyperparameters, specifically the inverse regularization parameter (C) and maximum number of iterations (max_iter).
+We utilize sklearn's GradientBoostingClassifier Class to establish and fit the model.
+Thereby, we define a parameter sampler to tune the hyperparameters, specifically the learning rate and number of estimators.
 Additionally, random parameter sampling was used, because it is an efficient, exploratory, and parallelizable method for hyperparameter tuning, which can potentially find better hyperparameters than other search methods. It is also robust to noise and other sources of variability in the training process. Additionally, a bandit policy was applied, since it is a popular early termination policy used in hyperparameter tuning that aims to save computational resources by terminating poorly performing runs early.
 
 With the estimator, parameter sampler, and an early termination policy, we create a HyperDrive Config, which is subsequently submitted as an experiment.
@@ -65,8 +65,8 @@ Upon completion of the run, we determine that the best model archives a validati
 
 ### Results
 
-With the described hyperparamter tuning approach of the logistic regression model we reached a validation accuracy of 80.00%. 
-Thereby, a regularization strength of 31.09% and a max iteration of 96 was sampled. 
+With the described hyperparamter tuning approach of the gradient boosting model we reached a validation accuracy of 80.00%. 
+Thereby, a learning rate of 0.3 and a number os estimators of 25 was sampled. 
 We could improve the tuning further, if we include more hyperparamters with a broader range. 
 
 ![automl_widget_1](screenshots/hyper_best_run.PNG)
@@ -77,7 +77,7 @@ We could improve the tuning further, if we include more hyperparamters with a br
 
 ## Model Deployment
 
-Since the Voting Ensemble (resulting from the automl approach) performed better (accuracy = 87.30%) than the hyperparamter tuning of the logistic regresion (accuracy = 80.00),
+Since the Voting Ensemble (resulting from the automl approach) performed better (accuracy = 89.64%) than the hyperparamter tuning of the logistic regresion (accuracy = 80.00%),
 we deployed the Voting Ensemble.
 
 ![automl_widget_1](screenshots/deployed_service.PNG)
