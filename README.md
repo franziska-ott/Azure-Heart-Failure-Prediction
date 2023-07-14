@@ -35,7 +35,7 @@ In addition we set accuracy as the primary metric to select the best resulting m
 
 ### Results
 
-The best resulting run was a VotingEnsemble, which reached a accuracy of 89.64%. The correpsonding parameters of the model can be found in the [Jupyter Notebook](https://github.com/franziska-ott/Azure-Heart-Failure-Prediction/blob/main/starter_file/hyperparameter_tuning.ipynb)
+The best resulting run was a VotingEnsemble, which reached a accuracy of 89.64%. The correpsonding parameters of the model can be found in the [Jupyter Notebook](https://github.com/franziska-ott/Azure-Heart-Failure-Prediction/blob/master/starter_file/hyperparameter_tuning.ipynb)
 
 ![automl_widget_1](screenshots/auto_registered_and_deployed_model.PNG)
 
